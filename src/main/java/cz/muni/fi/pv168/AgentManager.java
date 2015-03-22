@@ -6,6 +6,7 @@ import java.util.List;
  * Created by sachmet on 11.3.15.
  */
 public interface AgentManager {
+
     public void createAgent(Agent agent);
 
     public void updateAgent(Agent agent);
@@ -15,4 +16,8 @@ public interface AgentManager {
     public List<Agent> getAllAgents();
 
     public List<Agent> getAllAgentsWithStatus(AgentStatus status);
+
+    public Agent getAgentByCodeName(String name);
+
+    public Agent getAgentById(Long id);
 }
