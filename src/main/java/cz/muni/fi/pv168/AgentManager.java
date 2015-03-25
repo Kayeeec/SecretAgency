@@ -7,17 +7,17 @@ import java.util.List;
  */
 public interface AgentManager {
 
-    public void createAgent(Agent agent);
+    public void createAgent(Agent agent) throws SecretAgencyException;
 
-    public void updateAgent(Agent agent);
+    public void updateAgent(Agent agent) throws SecretAgencyException;
 
-    public void deleteAgent(Agent agent);
+    public void deleteAgent(Agent agent) throws SecretAgencyException;
 
-    public List<Agent> getAllAgents();
+    public List<Agent> getAllAgents() throws SecretAgencyException;
 
-    public List<Agent> getAllAgentsWithStatus(AgentStatus status);
+    public List<Agent> getAllAgentsWithStatus(AgentStatus status) throws SecretAgencyException;
 
-    public Agent getAgentByCodeName(String name);
+    public Agent getAgentByCodeName(String name) throws SecretAgencyException;
 
-    public Agent getAgentById(Long id);
+    public Agent getAgentById(Long id)throws SecretAgencyException;
 }
