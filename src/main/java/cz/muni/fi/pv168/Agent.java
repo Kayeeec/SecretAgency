@@ -3,7 +3,7 @@ package cz.muni.fi.pv168;
 /**
  * Created by sachmet on 11.3.15.
  */
-public class Agent implements Comparable{
+public class Agent {
     private Long id;
     private String codeName;
     private String contact;
@@ -11,6 +11,14 @@ public class Agent implements Comparable{
     private AgentStatus status;
 
     public Agent() {
+    }
+
+    public Agent(Long id, String codeName, String contact, String note, AgentStatus status) {
+        this.id = id;
+        this.codeName = codeName;
+        this.contact = contact;
+        this.note = note;
+        this.status = status;
     }
 
     public Long getId() {
@@ -51,36 +59,5 @@ public class Agent implements Comparable{
 
     public void setStatus(AgentStatus status) {
         this.status = status;
-    }
-
-    @Override
-    public int compareTo(Object o) {
-        return 0;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-
-        Agent agent = (Agent) o;
-
-        if (!codeName.equals(agent.codeName)) return false;
-        if (!contact.equals(agent.contact)) return false;
-        if (!id.equals(agent.id)) return false;
-        if (note != null ? !note.equals(agent.note) : agent.note != null) return false;
-        if (status != agent.status) return false;
-
-        return true;
-    }
-
-    @Override
-    public int hashCode() {
-        int result = id.hashCode();
-        result = 31 * result + codeName.hashCode();
-        result = 31 * result + contact.hashCode();
-        result = 31 * result + (note != null ? note.hashCode() : 0);
-        result = 31 * result + status.hashCode();
-        return result;
     }
 }

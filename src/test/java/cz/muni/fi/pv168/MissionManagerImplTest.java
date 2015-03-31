@@ -1,21 +1,37 @@
 package cz.muni.fi.pv168;
 
 import junit.framework.TestCase;
+import org.apache.commons.dbcp2.BasicDataSource;
 import org.junit.Before;
 import org.junit.Test;
 
-
+import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.Properties;
 
 public class MissionManagerImplTest extends TestCase {
     MissionManagerImpl missionManager;
 
     @Before
     public void setUp() throws Exception {
-        missionManager = new MissionManagerImpl();
+        Properties myconf = new Properties();
+        myconf.load(Test.class.getResourceAsStream("/myconf.properties"));
+
+
+//        BasicDataSource ds = new BasicDataSource();
+//        ds.setUrl(myconf.getProperty("jdbc.url"));
+//        ds.setUsername(myconf.getProperty("jdbc.user"));
+//        ds.setPassword(myconf.getProperty("jdbc.password"));
+
+        BasicDataSource ds = new BasicDataSource();
+        ds.setUrl("jdbc:derby://localhost:1527/MojeDB");
+        ds.setUsername("user");
+        ds.setPassword("heslo");
+
+        missionManager = new MissionManagerImpl(ds);
 
     }
 
@@ -193,7 +209,10 @@ public class MissionManagerImplTest extends TestCase {
             m1.setDescription("A venomous Snake");
             m1.setLocation("Moscow");
 
-            Long id = m1.getId();
+            missionManager.createMission(m1);
+            Mission m2 = missionManager.getMissionByName("Cobra");
+
+            Long id = m2.getId();
 
             missionManager.createMission(m1);
             Mission mission = missionManager.getMissionById(id);
@@ -214,9 +233,11 @@ public class MissionManagerImplTest extends TestCase {
             m1.setDescription("A venomous Snake");
             m1.setLocation("Moscow");
 
-            Long id = m1.getId();
-
             missionManager.createMission(m1);
+            Mission m2 = missionManager.getMissionByName("Cobra");
+            Long id = m2.getId();
+
+
             Mission mission = missionManager.getMissionById(id);
 
             mission.setId(1l);
@@ -267,13 +288,14 @@ public class MissionManagerImplTest extends TestCase {
     }
 
     @Test
-    public void testGetAllMissionsNoMissions() {
+    public void testGetAllMissionsNoMissions() throws SecretAgencyException {
         List<Mission> list = missionManager.getAllMissions();
         assertTrue(list.isEmpty());
     }
 
     @Test
-    public void testGetAllMissions() {
+    public void testGetAllMissions() throws SQLException, SecretAgencyException {
+
         Mission mission1 = new Mission();
         mission1.setName("Cobra");
         mission1.setDescription("A venomous Snake.");
