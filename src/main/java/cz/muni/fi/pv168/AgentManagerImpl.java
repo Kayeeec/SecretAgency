@@ -88,6 +88,11 @@ public class AgentManagerImpl implements AgentManager {
         return jdbc.query("SELECT * FROM agents WHERE status=?", agentMapper,
                 agentStatusToString(status));
     }
+
+    public Agent getAgentById(Long id) {
+        return jdbc.queryForObject("SELECT * FROM agents WHERE ID=?", agentMapper,
+                id);
+    }
 }
 
 
