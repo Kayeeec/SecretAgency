@@ -200,7 +200,7 @@ public class MissionManagerImpl implements MissionManager {
     }
 
     @Override
-    public Mission getMissionById(Long id) throws SQLException {
+    public Mission getMissionById(Long id) throws SecretAgencyException {
 
         try (Connection con = dataSource.getConnection()) {
             try (PreparedStatement st = con.prepareStatement("SELECT * FROM missions WHERE id = ?")) {
@@ -223,7 +223,7 @@ public class MissionManagerImpl implements MissionManager {
                 }
             }
         } catch (SQLException e) {
-            throw new SQLException("Method getMissionById(): failed select from database.", e);
+            throw new SecretAgencyException("Method getMissionById(): failed select from database.", e);
         }
     }
 

@@ -19,7 +19,7 @@ public interface MissionManager {
 
     public String getMissionDuration(Mission mission) throws SecretAgencyException;
 
-    public Mission getMissionById(Long id) throws SQLException;//
+    public Mission getMissionById(Long id) throws SecretAgencyException;//
 
     public Mission getMissionByName(String name) throws SQLException;//
 }

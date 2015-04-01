@@ -15,4 +15,8 @@ public interface AgentManager {
     public List<Agent> getAllAgents();
 
     public List<Agent> getAllAgentsWithStatus(AgentStatus status);
+
+    public Agent getAgentById(Long id);
+
+    public Agent getAgentByCodeName(String codeName);
 }

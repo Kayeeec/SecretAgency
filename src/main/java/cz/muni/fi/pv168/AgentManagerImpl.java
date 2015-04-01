@@ -52,7 +52,7 @@ public class AgentManagerImpl implements AgentManager {
         jdbc.update("DELETE FROM agents WHERE id=?", agent.getId());
     }
 
-    private AgentStatus agentStatusFromString(String str){
+    public static AgentStatus agentStatusFromString(String str){
         if (str.equals("DECEASED")){
             return AgentStatus.DECEASED;
         }
@@ -61,7 +61,7 @@ public class AgentManagerImpl implements AgentManager {
         }
         return AgentStatus.INACTIVE;
     }
-    private String agentStatusToString(AgentStatus status){
+    public String agentStatusToString(AgentStatus status){
         if(status.equals(AgentStatus.ACTIVE)){
             return "ACTIVE";
         }
@@ -71,7 +71,7 @@ public class AgentManagerImpl implements AgentManager {
         return "DECEASED";
     }
 
-    private RowMapper<Agent> agentMapper = (rs, rowNum) ->
+    public static RowMapper<Agent> agentMapper = (rs, rowNum) ->
             new Agent(rs.getLong("id"), rs.getString("codename"),
                     rs.getString("contact"), rs.getString("note"),
                     agentStatusFromString(rs.getString("status")));
@@ -87,6 +87,16 @@ public class AgentManagerImpl implements AgentManager {
     public List<Agent> getAllAgentsWithStatus(AgentStatus status) {
         return jdbc.query("SELECT * FROM agents WHERE status=?", agentMapper,
                 agentStatusToString(status));
+    }
+
+    @Override
+    public Agent getAgentById(Long id) {
+        return jdbc.queryForObject("SELECT * FROM customers WHERE id=?", agentMapper, id);
+    }
+
+    @Override
+    public Agent getAgentByCodeName(String codeName) {
+        return jdbc.queryForObject("SELECT * FROM customers WHERE codename=?", agentMapper, codeName);
     }
 }
 

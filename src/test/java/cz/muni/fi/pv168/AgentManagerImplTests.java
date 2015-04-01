@@ -1,18 +1,28 @@
 package cz.muni.fi.pv168;
 
 import org.junit.Before;
+import org.junit.After;
 import org.junit.Test;
 
+import org.springframework.dao.EmptyResultDataAccessException;
+import org.springframework.jdbc.datasource.embedded.EmbeddedDatabase;
+import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseBuilder;
+import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseType;
+
 import java.nio.channels.IllegalSelectorException;
+
 import java.util.Arrays;
 import java.util.List;
 
 import static java.util.Collections.*;
+
 import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertNotSame;
 import static junit.framework.Assert.assertNull;
 import static junit.framework.TestCase.fail;
+
 import static org.hamcrest.CoreMatchers.*;
+
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
@@ -22,12 +32,18 @@ import static org.junit.Assert.assertTrue;
  */
 public class AgentManagerImplTests {
 
-    AgentManagerImpl agentManager;
-
+    private EmbeddedDatabase db;
+    private AgentManager agentManager;
 
     @Before
-    public void setUp() throws Exception{
-        agentManager = new AgentManagerImpl();
+    public void setUp() throws Exception {
+        db = new EmbeddedDatabaseBuilder().setType(EmbeddedDatabaseType.DERBY).addScript("tableCreator.sql").addScript("testData.sql").build();
+        agentManager = new AgentManagerImpl(db);
+    }
+
+    @After
+    public void tearDown() throws Exception {
+        db.shutdown();
     }
 
     @Test

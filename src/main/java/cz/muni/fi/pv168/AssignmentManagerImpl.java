@@ -1,44 +1,168 @@
 package cz.muni.fi.pv168;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.RowMapper;
+import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
+import org.springframework.jdbc.core.namedparam.SqlParameterSource;
+import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
+
+import javax.sql.DataSource;
+import java.sql.Date;
+import java.time.LocalDate;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import java.util.List;
+
+
+import static cz.muni.fi.pv168.AgentManagerImpl.agentMapper;
+
 
 /**
  * Created by sachmet on 11.3.15.
  */
 public class AssignmentManagerImpl implements AssignmentManager {
+
+    final static Logger log = LoggerFactory.getLogger(AssignmentManagerImpl.class);
+    private final JdbcTemplate jdbc;
+
+    private AgentManager agentManager;
+    private MissionManager missionManager;
+
+    public AssignmentManagerImpl(DataSource dataSource) {
+        this.jdbc = new JdbcTemplate(dataSource);
+    }
+
+    public void setAgentManager(AgentManager agentManager) {
+        this.agentManager = agentManager;
+    }
+
+    public void setMissionManager(MissionManager missionManager) {
+        this.missionManager = missionManager;
+    }
+
+    private Date toSQLDate(LocalDate localDate) {
+        if (localDate == null) return null;
+        return new Date(ZonedDateTime.of(localDate.atStartOfDay(), ZoneId.systemDefault()).toInstant().toEpochMilli());
+    }
+
     @Override
     public void createAssignment(Assignment assignment) {
-
+        SimpleJdbcInsert insertAssignment = new SimpleJdbcInsert(jdbc).withTableName("assignments").usingGeneratedKeyColumns("id");
+        SqlParameterSource parameters = new MapSqlParameterSource()
+                .addValue("agentId", assignment.getAgent().getId())
+                .addValue("missionId", assignment.getMission().getId())
+                .addValue("startDate", toSQLDate(assignment.getStartDate()))
+                .addValue("endDate", toSQLDate(assignment.getEndDate()));
+        Number id = insertAssignment.executeAndReturnKey(parameters);
+        assignment.setId(id.longValue());
     }
 
     @Override
-    public void updateAssignment(Assignment assignment) {
-
+    public void updateAssignment(Assignment assignment) throws SecretAgencyException{
+        log.debug("updateAssignment({})", assignment);
+        if (assignment.getId() == null) throw new SecretAgencyException("assignment id is null");
+        int n = jdbc.update("UPDATE Body SET agentId = ?, missionId = ?, payment = ?, startDate = ? , endDate WHERE assignmentId = ?",
+                assignment.getAgent().getId(),
+                assignment.getMission().getId(),
+                assignment.getPayment(),
+                assignment.getStartDate() == null ? null : toSQLDate(assignment.getStartDate()),
+                assignment.getEndDate() == null ? null : toSQLDate(assignment.getEndDate()),
+                assignment.getId());
+        if (n != 1) throw new SecretAgencyException("assignment " + assignment + " not updated");
     }
 
     @Override
-    public void deleteAssignment(Assignment assignment) {
-
+    public void deleteAssignment(Assignment assignment) throws SecretAgencyException{
+        log.debug("deleteAssignment({})", assignment);
+        if (assignment == null) throw new SecretAgencyException("assignment is null");
+        if (assignment.getId() == null) throw new SecretAgencyException("assignment id is null");
+        int n = jdbc.update("DELETE FROM assignments WHERE assignmentId = ?", assignment.getId());
+        if (n != 1) throw new SecretAgencyException("assignment " + assignment + " not deleted");
     }
 
     @Override
     public List<Assignment> getAllAssignmentsForAgent(Agent agent) {
-        return null;
+        return jdbc.query("SELECT * FROM assignments WHERE agentIdId=?",
+                (rs, rowNum) -> {
+                    long missionId = rs.getLong("missionId");
+                    Mission mission = null;
+                    try {
+                        mission = missionManager.getMissionById(missionId);
+                    } catch (SecretAgencyException ex) {
+                        log.error("cannot find agent", ex);
+                    }
+                    LocalDate startDate = rs.getDate("startDate").toLocalDate();
+                    LocalDate endDate = rs.getDate("endDate").toLocalDate();
+                    return new Assignment(rs.getLong("assignmentId"), agent, mission, rs.getDouble("payment"), startDate, endDate);
+                },
+                agent.getId());
+    }
+
+    public  RowMapper<Assignment> assignmentMapper = (rs, rowNum) -> {
+        Agent agent = agentManager.getAgentById(rs.getLong("agentId"));
+        Mission mission = null;
+        try {
+            mission = missionManager.getMissionById(rs.getLong("missionId"));
+        } catch (SecretAgencyException e) {
+            e.printStackTrace();
+        }
+        String startDate = rs.getString("startDate");
+        String endDate = rs.getString("endDate");
+        return new Assignment(
+                rs.getLong("assignmentId"),
+                agent,
+                mission,
+                rs.getDouble("payment"),
+                startDate == null ? null : LocalDate.parse(startDate),
+                endDate == null ? null : LocalDate.parse(endDate));
+    };
+
+    @Override
+    public List<Assignment> getAllAssignmentsForMission(Mission mission) throws SecretAgencyException{
+        log.debug("findBodiesInGrave({})", mission);
+        if (mission == null) throw new SecretAgencyException("mission is null");
+        if (mission.getId() == null) throw new SecretAgencyException("mission id is null");
+        return jdbc.query(
+                "SELECT * FROM assignments WHERE missionId = ?",assignmentMapper, mission.getId());
     }
 
     @Override
-    public List<Assignment> getAllAssignmentsForMission(Mission mission) {
-        return null;
+    public Assignment getAssignment(Agent agent, Mission mission) throws SecretAgencyException{
+        log.debug("getBody({})", agent, mission);
+        if (agent == null || mission == null) throw new SecretAgencyException("id is null");
+        List<Assignment> list = jdbc.query("SELECT * FROM assignments WHERE missionId = ?, agentId=?", assignmentMapper, mission.getId(), agent.getId());
+        return list.isEmpty() ? null : list.get(0);
     }
 
-    @Override
-    public Assignment getAssignment(Agent agent, Mission mission) {
-        return null;
+    private MissionStatus missionStatusFromString(String str){
+        if(str.equals("WAITING")) return MissionStatus.WAITING;
+        if(str.equals("ONGOING")) return MissionStatus.ONGOING;
+        if(str.equals("FINISHED")) return MissionStatus.FINISHED;
+        return MissionStatus.FAILED;
     }
+
+    public RowMapper<Mission> missionMapper = (rs, rowNum) -> {
+        String startTime = rs.getString("startTime");
+        String endTime = rs.getString("endTime");
+        String maxEndTime = rs.getString("maxEndTime");
+        return new Mission(
+                rs.getLong("id"),
+                rs.getString("missionname"),
+                rs.getString("location"),
+                startTime == null ? null : LocalDate.parse(startTime),
+                endTime == null ? null : LocalDate.parse(endTime),
+                maxEndTime == null ? null : LocalDate.parse(maxEndTime),
+                rs.getString("description"),
+                missionStatusFromString(rs.getString("status")));
+    };
 
     @Override
     public List<Mission> getUnassignedMissions() {
-        return null;
+        log.debug("getAllAgents()");
+        return jdbc.query("SELECT * FROM missions WHERE id NOT IN (SELECT missionId FROM assignments)", missionMapper);
     }
 
     @Override
@@ -49,5 +173,11 @@ public class AssignmentManagerImpl implements AssignmentManager {
     @Override
     public String getAssignmentDuration(Assignment assignment) {
         return null;
+    }
+
+    @Override
+    public List<Assignment> getAllAssignments() throws SecretAgencyException {
+        log.debug("getAllAgents()");
+        return jdbc.query("SELECT * FROM assignments", assignmentMapper);
     }
 }
