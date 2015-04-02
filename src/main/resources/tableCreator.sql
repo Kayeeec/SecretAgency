@@ -19,8 +19,8 @@ CREATE TABLE missions (
 
 CREATE TABLE assignments (
   assignmentId INTEGER NOT NULL PRIMARY KEY GENERATED ALWAYS AS IDENTITY ,
-  agentId INTEGER NOT NULL,
-  missionId INTEGER NOT NULL,
+  agentId INTEGER NOT NULL REFERENCES agents(ID),
+  missionId INTEGER NOT NULL REFERENCES missions(ID),
   payment DOUBLE,
   startDate DATE,
   endDate DATE,
