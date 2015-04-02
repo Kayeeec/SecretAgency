@@ -16,9 +16,7 @@ import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.util.List;
 
-
-//import static cz.muni.fi.pv168.AgentManagerImpl.agentMapper;
-
+import cz.muni.fi.pv168.AgentManagerImpl.*;
 
 /**
  * Created by sachmet on 11.3.15.
@@ -161,23 +159,34 @@ public class AssignmentManagerImpl implements AssignmentManager {
 
     @Override
     public List<Mission> getUnassignedMissions() {
-        log.debug("getAllAgents()");
+        log.debug("getAllAgents({})");
         return jdbc.query("SELECT * FROM missions WHERE id NOT IN (SELECT missionId FROM assignments)", missionMapper);
     }
 
-    @Override
-    public List<Agent> getAvailableAgents(Mission mission) {
-        return null;
+    private AgentStatus agentStatusFromString(String str){
+        if (str.equals("DECEASED")){
+            return AgentStatus.DECEASED;
+        }
+        if(str.equals("ACTIVE")){
+            return AgentStatus.ACTIVE;
+        }
+        return AgentStatus.INACTIVE;
     }
 
+    public RowMapper<Agent> agentMapper = (rs, rowNum) ->
+            new Agent(rs.getLong("id"), rs.getString("codename"),
+                    rs.getString("contact"), rs.getString("note"),
+                    agentStatusFromString(rs.getString("status")));
+
     @Override
-    public String getAssignmentDuration(Assignment assignment) {
-        return null;
+    public List<Agent> getAvailableAgents() {
+        log.debug("getAvailableAgents({})");
+        return jdbc.query("SELECT * FROM agents WHERE id NOT IN (SELECT agentId FROM assignments)", agentMapper);
     }
 
     @Override
     public List<Assignment> getAllAssignments() throws SecretAgencyException {
-        log.debug("getAllAgents()");
+        log.debug("getAllAgents({})");
         return jdbc.query("SELECT * FROM assignments", assignmentMapper);
     }
 }
