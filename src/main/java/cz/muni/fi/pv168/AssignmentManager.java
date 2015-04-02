@@ -24,5 +24,5 @@ public interface AssignmentManager {
     public List<Mission> getUnassignedMissions() throws SecretAgencyException;
 
     public List<Agent> getAvailableAgents() throws SecretAgencyException;
-
+;
 }

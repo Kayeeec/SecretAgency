@@ -243,15 +243,6 @@ public class AgentManagerImplTests {
 
     @Test
     public void testGetAllAgents() throws Exception{
-        try (Connection conn = db.getConnection()) {
-            try(PreparedStatement st = conn.prepareStatement("DELETE FROM AGENTS")) {
-
-            }
-        } catch (SQLException ex) {
-            //log.error("db connection problem", ex);
-            throw new SecretAgencyException("Error when deleting all missions", ex);
-        }
-
         Agent agent1 = new Agent();
         agent1.setCodeName("Agent001");
         agent1.setContact("0905 762 565");
