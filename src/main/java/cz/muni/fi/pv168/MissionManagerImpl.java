@@ -184,20 +184,6 @@ public class MissionManagerImpl implements MissionManager {
         }
     }
 
-    @Override
-    public String getMissionDuration(Mission mission) throws SecretAgencyException{
-        //log.debug("finding all missions");
-        try (Connection conn = dataSource.getConnection()) {
-            try (PreparedStatement st = conn.prepareStatement("SELECT startTime, endTime, maxEndTime FROM missions WHERE id = ?")) {
-                st.setLong(1, mission.getId());
-                ResultSet rs = st.executeQuery();
-                return "starts: " + rs.getString("startTime") + " ends: " + rs.getString("endTime") + " must end until:" + rs.getString("maxEndTime");
-            }
-        } catch (SQLException ex) {
-            //log.error("db connection problem", ex);
-            throw new SecretAgencyException("Error when retrieving all missions", ex);
-        }
-    }
 
     @Override
     public Mission getMissionById(Long id) throws SecretAgencyException {

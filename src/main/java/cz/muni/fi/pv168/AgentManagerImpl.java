@@ -88,6 +88,20 @@ public class AgentManagerImpl implements AgentManager {
         return jdbc.query("SELECT * FROM agents WHERE status=?", agentMapper,
                 agentStatusToString(status));
     }
+
+    public Agent getAgentById(Long id)  {
+        //log.debug("getBody({})", id);
+        if (id == null) throw new IllegalArgumentException("id is null");
+        List<Agent> list = jdbc.query("SELECT id, CODENAME, CONTACT, NOTE, STATUS  FROM AGENTS WHERE id = ?", agentMapper, id);
+        return list.isEmpty() ? null : list.get(0);
+    }
+
+    public Agent getAgentByCodeName(String codeName) {
+        //log.debug("getBody({})", id);
+        if (codeName == null) throw new IllegalArgumentException("codename is null");
+        List<Agent> list = jdbc.query("SELECT id, CODENAME, CONTACT, NOTE, STATUS  FROM AGENTS WHERE CODENAME = ?", agentMapper, codeName);
+        return list.isEmpty() ? null : list.get(0);
+    }
 }
 
 

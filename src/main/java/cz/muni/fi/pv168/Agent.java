@@ -8,7 +8,7 @@ public class Agent implements Comparable<Agent>{
     private String codeName;
     private String contact;
     private String note;
-    private AgentStatus status;
+    private AgentStatus status = AgentStatus.ACTIVE;
 
     public Agent(){
     }

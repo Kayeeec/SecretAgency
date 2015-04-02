@@ -14,6 +14,16 @@
       <column name="NOTE" sqlType="VARCHAR" precision="250" scale="0" nullable="true" jdbcType="12"/>
       <column name="STATUS" sqlType="VARCHAR" precision="10" scale="0" nullable="true" jdbcType="12"/>
       <primary-key name="SQL150326121508170" columns="ID"/>
+      <exported-key name="SQL150401141342830" table="ASSIGNMENTS" schema="USER" catalog="" columns="AGENTID"/>
+    </table>
+    <table name="ASSIGNMENTS" schema="USER" catalog="" type="TABLE">
+      <column name="AGENTID" sqlType="INTEGER" precision="10" scale="0" nullable="false" jdbcType="4"/>
+      <column name="MISSIONID" sqlType="INTEGER" precision="10" scale="0" nullable="false" jdbcType="4"/>
+      <column name="PAYMENT" sqlType="DOUBLE" precision="52" scale="0" nullable="true" jdbcType="8"/>
+      <column name="STARTDATE" sqlType="DATE" precision="10" scale="0" nullable="true" jdbcType="91"/>
+      <column name="ENDDATE" sqlType="DATE" precision="10" scale="0" nullable="true" jdbcType="91"/>
+      <foreign-key name="SQL150401141342830" columns="AGENTID" ref-table="AGENTS" ref-schema="USER" ref-catalog="" ref-columns="ID" update-rule="3" delete-rule="3" deferrability="2"/>
+      <foreign-key name="SQL150401141342840" columns="MISSIONID" ref-table="MISSIONS" ref-schema="USER" ref-catalog="" ref-columns="ID" update-rule="3" delete-rule="3" deferrability="2"/>
     </table>
     <table name="MISSIONS" schema="USER" catalog="" type="TABLE">
       <column name="ID" sqlType="INTEGER" precision="10" scale="0" nullable="false" jdbcType="4" def="QVVUT0lOQ1JFTUVOVDogc3RhcnQgMSBpbmNyZW1lbnQgMQ==" autoIncrement="true"/>
@@ -25,6 +35,7 @@
       <column name="DESCRIPTION" sqlType="VARCHAR" precision="250" scale="0" nullable="true" jdbcType="12"/>
       <column name="STATUS" sqlType="VARCHAR" precision="10" scale="0" nullable="true" jdbcType="12"/>
       <primary-key name="SQL150326121508490" columns="ID"/>
+      <exported-key name="SQL150401141342840" table="ASSIGNMENTS" schema="USER" catalog="" columns="MISSIONID"/>
     </table>
   </data-source>
 </component>

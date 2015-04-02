@@ -2,6 +2,3 @@ startNetworkServer -noSecurityManager
 ij>
 connect 'jdbc:derby://localhost:1527/MojeDB;user=user;password=heslo;create=true';
 
-Successfully created project 'SecretAgency' on GitHub, but initial push failed:
-unable to access 'https://github.com/Kayeeec/SecretAgency.git/': Failed to connect to github.com
-port 443: Connection timed out

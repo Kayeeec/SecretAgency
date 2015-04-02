@@ -15,7 +15,12 @@ public class Assignment {
     private LocalDate startDate; //non null
     private LocalDate endDate; //non null
 
-    public Assignment() {
+    public Assignment(Agent agent, Mission mission, Double payment, LocalDate startDate, LocalDate endDate) {
+        this.agent = agent;
+        this.mission = mission;
+        this.payment = payment;
+        this.startDate = startDate;
+        this.endDate = endDate;
     }
 
     public Assignment(Long id, Agent agent, Mission mission, Double payment, LocalDate startDate, LocalDate endDate) {

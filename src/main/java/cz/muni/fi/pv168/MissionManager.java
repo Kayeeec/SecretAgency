@@ -17,8 +17,6 @@ public interface MissionManager {
 
     public List<Mission> getAllMissionsWithStatus(MissionStatus status) throws SecretAgencyException;
 
-    public String getMissionDuration(Mission mission) throws SecretAgencyException;
-
     public Mission getMissionById(Long id) throws SecretAgencyException;//
 
     public Mission getMissionByName(String name) throws SQLException;//

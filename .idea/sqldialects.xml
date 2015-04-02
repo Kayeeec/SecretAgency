@@ -3,5 +3,7 @@
   <component name="SqlDialectMappings">
     <file url="file://$PROJECT_DIR$/src/main/java/cz/muni/fi/pv168/AgentManagerImpl.java" dialect="Derby" />
     <file url="file://$PROJECT_DIR$/src/main/java/cz/muni/fi/pv168/MissionManagerImpl.java" dialect="Derby" />
+    <file url="file://$PROJECT_DIR$/src/main/resources/tableCreator.sql" dialect="Derby" />
+    <file url="file://$PROJECT_DIR$/src/main/resources/testData.sql" dialect="Derby" />
   </component>
 </project>

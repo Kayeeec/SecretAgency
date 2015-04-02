@@ -320,15 +320,11 @@ public class MissionManagerImplTest extends TestCase {
 
     }
 
-    @Test
-    public void testGetAllMissionsWithStatus() throws Exception {
+//    @Test
+//    public void testGetAllMissionsWithStatus() throws Exception {
+//
+//    }
 
-    }
-
-    @Test
-    public void testGetMissionDuration() throws Exception {
-
-    }
 
 
 
