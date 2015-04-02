@@ -1,6 +1,6 @@
 CREATE TABLE agents (
     id INTEGER NOT NULL PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
-    codename VARCHAR(250),
+    codename VARCHAR(250) UNIQUE,
     contact VARCHAR(250),
     note VARCHAR(250),
     status VARCHAR(10)
@@ -8,7 +8,7 @@ CREATE TABLE agents (
 
 CREATE TABLE missions (
   id INTEGER NOT NULL PRIMARY KEY GENERATED ALWAYS AS IDENTITY ,
-  missionname VARCHAR(250),
+  missionname VARCHAR(250) UNIQUE,
   location VARCHAR(250),
   startTime DATE,
   endTime DATE,

@@ -103,4 +103,27 @@ public class Mission implements Comparable<Mission> {
 
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Mission mission = (Mission) o;
+
+        if (description != null ? !description.equals(mission.description) : mission.description != null) return false;
+        if (endTime != null ? !endTime.equals(mission.endTime) : mission.endTime != null) return false;
+        if (!id.equals(mission.id)) return false;
+        if (location != null ? !location.equals(mission.location) : mission.location != null) return false;
+        if (maxEndTime != null ? !maxEndTime.equals(mission.maxEndTime) : mission.maxEndTime != null) return false;
+        if (!name.equals(mission.name)) return false;
+        if (startTime != null ? !startTime.equals(mission.startTime) : mission.startTime != null) return false;
+        if (status != mission.status) return false;
+
+        return true;
+    }
+
+    @Override
+    public int hashCode() {
+        return id.hashCode();
+    }
 }

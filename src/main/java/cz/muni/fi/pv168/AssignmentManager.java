@@ -23,7 +23,6 @@ public interface AssignmentManager {
 
     public List<Mission> getUnassignedMissions() throws SecretAgencyException;
 
-    public List<Agent> getAvailableAgents(Mission mission) throws SecretAgencyException;
+    public List<Agent> getAvailableAgents() throws SecretAgencyException;
 
-    public String getAssignmentDuration(Assignment assignment) throws SecretAgencyException;
 }

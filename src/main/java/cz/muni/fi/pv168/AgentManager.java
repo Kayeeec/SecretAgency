@@ -6,9 +6,9 @@ import java.util.List;
  * Created by sachmet on 11.3.15.
  */
 public interface AgentManager {
-    public void createAgent(Agent agent);
+    public void createAgent(Agent agent) throws SecretAgencyException;
 
-    public void updateAgent(Agent agent);
+    public void updateAgent(Agent agent) throws SecretAgencyException;
 
     public void deleteAgent(Agent agent);
 

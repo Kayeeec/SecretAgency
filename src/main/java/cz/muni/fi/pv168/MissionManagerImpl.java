@@ -18,16 +18,16 @@ public class MissionManagerImpl implements MissionManager {
 
     private String missionStatusToString(MissionStatus status){
         if(status.equals(MissionStatus.WAITING)) return "WAITING";
-        if(status.equals(MissionStatus.ONGOING)) return "ONGOING";
-        if(status.equals(MissionStatus.FINISHED)) return "FINISHED";
-        return "FAILED";
+        else if(status.equals(MissionStatus.ONGOING)) return "ONGOING";
+        else if(status.equals(MissionStatus.FINISHED)) return "FINISHED";
+        else return "FAILED";
     }
 
     private MissionStatus missionStatusFromString(String str){
         if(str.equals("WAITING")) return MissionStatus.WAITING;
-        if(str.equals("ONGOING")) return MissionStatus.ONGOING;
-        if(str.equals("FINISHED")) return MissionStatus.FINISHED;
-        return MissionStatus.FAILED;
+        else if(str.equals("ONGOING")) return MissionStatus.ONGOING;
+        else if(str.equals("FINISHED")) return MissionStatus.FINISHED;
+        else return MissionStatus.FAILED;
     }
 
     @Override
@@ -67,20 +67,20 @@ public class MissionManagerImpl implements MissionManager {
     @Override
     public void updateMission(Mission mission) throws SQLException {
         try (Connection con = dataSource.getConnection()) {
-            try (PreparedStatement st = con.prepareStatement("update missions set missionname=?, LOCATION=?, STARTTIME=?, ENDTIME=?, MAXENDTIME=?, DESCRIPTION=?, STATUS=? where id=?")) {
-                st.setString(1, mission.getName());
-                st.setString(2, mission.getLocation());
+            try (PreparedStatement st = con.prepareStatement("update missions set LOCATION=?, STARTTIME=?, ENDTIME=?, MAXENDTIME=?, DESCRIPTION=?, STATUS=? where id=?")) {
+                //st.setString(1, mission.getName()); -- update does not change name
+                st.setString(1, mission.getLocation());
 
                 LocalDate sdate = mission.getStartTime();
                 LocalDate edate = mission.getEndTime();
                 LocalDate mdate = mission.getMaxEndTime();
-                st.setObject(3, sdate == null ? null : sdate.toString(), Types.DATE);
-                st.setObject(4, edate == null ? null : edate.toString(), Types.DATE);
-                st.setObject(5, mdate == null ? null : mdate.toString(), Types.DATE);
+                st.setObject(2, sdate == null ? null : sdate.toString(), Types.DATE);
+                st.setObject(3, edate == null ? null : edate.toString(), Types.DATE);
+                st.setObject(4, mdate == null ? null : mdate.toString(), Types.DATE);
 
-                st.setString(6, mission.getDescription());
-                st.setString(7, missionStatusToString(mission.getStatus()));
-                st.setLong(8, mission.getId());
+                st.setString(5, mission.getDescription());
+                st.setString(6, missionStatusToString(mission.getStatus()));
+                st.setLong(7, mission.getId());
 
                 int n = st.executeUpdate();
                 if (n != 1) {

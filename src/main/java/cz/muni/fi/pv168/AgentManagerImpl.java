@@ -19,39 +19,6 @@ public class AgentManagerImpl implements AgentManager {
         this.jdbc = new JdbcTemplate(dataSource);
     }
 
-    @Override
-    public void createAgent(Agent agent) {
-        SimpleJdbcInsert insertAgent = new SimpleJdbcInsert(jdbc)
-                .withTableName("agents").usingGeneratedKeyColumns("id");
-
-        SqlParameterSource parameters = new MapSqlParameterSource()
-                .addValue("codename", agent.getCodeName())
-                .addValue("contact", agent.getContact())
-                .addValue("note", agent.getNote())
-                .addValue("status", agent.getStatus());
-
-        Number id = insertAgent.executeAndReturnKey(parameters);
-        agent.setId(id.longValue());
-
-    }
-
-    @Override
-    public void updateAgent(Agent agent) {
-        jdbc.update("UPDATE agents set codename=?,contact=?,note=?,status=? where id=?",
-                agent.getCodeName(),
-                agent.getContact(),
-                agent.getNote(),
-                agent.getStatus(),
-                agent.getId()
-        );
-    }
-
-    @Override
-    public void deleteAgent(Agent agent) {
-
-        jdbc.update("DELETE FROM agents WHERE id=?", agent.getId());
-    }
-
     private AgentStatus agentStatusFromString(String str){
         if (str.equals("DECEASED")){
             return AgentStatus.DECEASED;
@@ -70,6 +37,54 @@ public class AgentManagerImpl implements AgentManager {
         }
         return "DECEASED";
     }
+
+    @Override
+    public void createAgent(Agent agent) throws SecretAgencyException {
+        try{
+            SimpleJdbcInsert insertAgent = new SimpleJdbcInsert(jdbc)
+                    .withTableName("agents").usingGeneratedKeyColumns("id");
+
+            SqlParameterSource parameters = new MapSqlParameterSource()
+                    .addValue("codename", agent.getCodeName())
+                    .addValue("contact", agent.getContact())
+                    .addValue("note", agent.getNote())
+                    .addValue("status", agentStatusToString(agent.getStatus()));
+
+            Number id = insertAgent.executeAndReturnKey(parameters);
+            agent.setId(id.longValue());
+
+        }catch (Exception ex){
+            throw new SecretAgencyException(ex.getMessage(), ex.getCause());
+        }
+
+    }
+
+    @Override
+    public void updateAgent(Agent agent) throws SecretAgencyException {
+        try{
+            Agent agentToUpdate = getAgentById(agent.getId());
+            if (!agentToUpdate.getCodeName().equals(agent.getCodeName())){
+                throw new SecretAgencyException("Method updateAgent() tried to change agents codeName.");
+            }
+
+            jdbc.update("UPDATE agents set codename=?,contact=?,note=?,status=? where id=?",
+                    agent.getCodeName(),
+                    agent.getContact(),
+                    agent.getNote(),
+                    agentStatusToString(agent.getStatus()),
+                    agent.getId()
+            );
+        }catch (Exception ex){
+            throw new SecretAgencyException(ex.getMessage(), ex.getCause());
+        }
+    }
+
+    @Override
+    public void deleteAgent(Agent agent) {
+
+        jdbc.update("DELETE FROM agents WHERE id=?", agent.getId());
+    }
+
 
     private RowMapper<Agent> agentMapper = (rs, rowNum) ->
             new Agent(rs.getLong("id"), rs.getString("codename"),

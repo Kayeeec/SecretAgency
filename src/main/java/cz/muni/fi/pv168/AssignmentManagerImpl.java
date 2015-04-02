@@ -43,6 +43,14 @@ public class AssignmentManagerImpl implements AssignmentManager {
         this.missionManager = missionManager;
     }
 
+    public AgentManager getAgentManager() {
+        return agentManager;
+    }
+
+    public MissionManager getMissionManager() {
+        return missionManager;
+    }
+
     private Date toSQLDate(LocalDate localDate) {
         if (localDate == null) return null;
         return new Date(ZonedDateTime.of(localDate.atStartOfDay(), ZoneId.systemDefault()).toInstant().toEpochMilli());
@@ -166,12 +174,7 @@ public class AssignmentManagerImpl implements AssignmentManager {
     }
 
     @Override
-    public List<Agent> getAvailableAgents(Mission mission) {
-        return null;
-    }
-
-    @Override
-    public String getAssignmentDuration(Assignment assignment) {
+    public List<Agent> getAvailableAgents() {
         return null;
     }
 
