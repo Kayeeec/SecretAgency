@@ -81,28 +81,42 @@ public class Assignment {
     }
 
     @Override
+    public String toString() {
+        return "Assignment{" +
+                "id=" + id +
+                ", agent=" + agent +
+                ", mission=" + mission +
+                ", payment=" + payment +
+                ", startDate=" + startDate +
+                ", endDate=" + endDate +
+                '}';
+    }
+
+    @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
 
         Assignment that = (Assignment) o;
 
-        if (!agent.equals(that.agent)) return false;
-        if (!endDate.equals(that.endDate)) return false;
-        if (!mission.equals(that.mission)) return false;
-        if (!payment.equals(that.payment)) return false;
-        if (!startDate.equals(that.startDate)) return false;
+        if (agent != null ? !agent.equals(that.agent) : that.agent != null) return false;
+        if (endDate != null ? !endDate.equals(that.endDate) : that.endDate != null) return false;
+        if (id != null ? !id.equals(that.id) : that.id != null) return false;
+        if (mission != null ? !mission.equals(that.mission) : that.mission != null) return false;
+        if (payment != null ? !payment.equals(that.payment) : that.payment != null) return false;
+        if (startDate != null ? !startDate.equals(that.startDate) : that.startDate != null) return false;
 
         return true;
     }
 
     @Override
     public int hashCode() {
-        int result = agent.hashCode();
-        result = 31 * result + mission.hashCode();
-        result = 31 * result + payment.hashCode();
-        result = 31 * result + startDate.hashCode();
-        result = 31 * result + endDate.hashCode();
+        int result = id != null ? id.hashCode() : 0;
+        result = 31 * result + (agent != null ? agent.hashCode() : 0);
+        result = 31 * result + (mission != null ? mission.hashCode() : 0);
+        result = 31 * result + (payment != null ? payment.hashCode() : 0);
+        result = 31 * result + (startDate != null ? startDate.hashCode() : 0);
+        result = 31 * result + (endDate != null ? endDate.hashCode() : 0);
         return result;
     }
 }

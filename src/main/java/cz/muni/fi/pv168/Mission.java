@@ -112,10 +112,10 @@ public class Mission implements Comparable<Mission> {
 
         if (description != null ? !description.equals(mission.description) : mission.description != null) return false;
         if (endTime != null ? !endTime.equals(mission.endTime) : mission.endTime != null) return false;
-        if (!id.equals(mission.id)) return false;
+        if (id != null ? !id.equals(mission.id) : mission.id != null) return false;
         if (location != null ? !location.equals(mission.location) : mission.location != null) return false;
         if (maxEndTime != null ? !maxEndTime.equals(mission.maxEndTime) : mission.maxEndTime != null) return false;
-        if (!name.equals(mission.name)) return false;
+        if (name != null ? !name.equals(mission.name) : mission.name != null) return false;
         if (startTime != null ? !startTime.equals(mission.startTime) : mission.startTime != null) return false;
         if (status != mission.status) return false;
 
@@ -124,6 +124,28 @@ public class Mission implements Comparable<Mission> {
 
     @Override
     public int hashCode() {
-        return id.hashCode();
+        int result = id != null ? id.hashCode() : 0;
+        result = 31 * result + (name != null ? name.hashCode() : 0);
+        result = 31 * result + (location != null ? location.hashCode() : 0);
+        result = 31 * result + (startTime != null ? startTime.hashCode() : 0);
+        result = 31 * result + (endTime != null ? endTime.hashCode() : 0);
+        result = 31 * result + (maxEndTime != null ? maxEndTime.hashCode() : 0);
+        result = 31 * result + (description != null ? description.hashCode() : 0);
+        result = 31 * result + (status != null ? status.hashCode() : 0);
+        return result;
+    }
+
+    @Override
+    public String toString() {
+        return "Mission{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", location='" + location + '\'' +
+                ", startTime=" + startTime +
+                ", endTime=" + endTime +
+                ", maxEndTime=" + maxEndTime +
+                ", description='" + description + '\'' +
+                ", status=" + status +
+                '}';
     }
 }

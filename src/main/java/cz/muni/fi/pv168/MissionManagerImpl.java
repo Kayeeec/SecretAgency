@@ -17,17 +17,11 @@ public class MissionManagerImpl implements MissionManager {
     }
 
     private String missionStatusToString(MissionStatus status){
-        if(status.equals(MissionStatus.WAITING)) return "WAITING";
-        else if(status.equals(MissionStatus.ONGOING)) return "ONGOING";
-        else if(status.equals(MissionStatus.FINISHED)) return "FINISHED";
-        else return "FAILED";
+        return status.toString();
     }
 
     private MissionStatus missionStatusFromString(String str){
-        if(str.equals("WAITING")) return MissionStatus.WAITING;
-        else if(str.equals("ONGOING")) return MissionStatus.ONGOING;
-        else if(str.equals("FINISHED")) return MissionStatus.FINISHED;
-        else return MissionStatus.FAILED;
+        return MissionStatus.valueOf(str);
     }
 
     @Override
@@ -138,6 +132,7 @@ public class MissionManagerImpl implements MissionManager {
         mission.setStartTime(sDate);
         mission.setEndTime(eDate);
         mission.setMaxEndTime(mDate);
+        mission.setStatus(MissionStatus.valueOf(rs.getString("status")));
 
 //        mission.setStartTime(dateToLocalDate(rs.getDate("startTime")));
 //        mission.setEndTime(dateToLocalDate(rs.getDate("note")));
@@ -167,7 +162,7 @@ public class MissionManagerImpl implements MissionManager {
     @Override
     public List<Mission> getAllMissionsWithStatus(MissionStatus status) throws SecretAgencyException{
         //log.debug("finding all missions");
-        String stringStatus = status.toString();
+        String stringStatus = missionStatusToString(status);
         try (Connection conn = dataSource.getConnection()) {
             try (PreparedStatement st = conn.prepareStatement("SELECT id, MISSIONNAME, location, startTime, endTime, maxEndTime, description, status FROM missions WHERE status = ?")) {
                 st.setString(1, stringStatus);
