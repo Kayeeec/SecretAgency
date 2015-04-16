@@ -2,7 +2,6 @@ package cz.muni.fi.pv168;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
@@ -15,8 +14,6 @@ import java.time.LocalDate;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.util.List;
-
-import cz.muni.fi.pv168.AgentManagerImpl.*;
 
 /**
  * Created by sachmet on 11.3.15.
@@ -31,14 +28,8 @@ public class AssignmentManagerImpl implements AssignmentManager {
 
     public AssignmentManagerImpl(DataSource dataSource) {
         this.jdbc = new JdbcTemplate(dataSource);
-    }
-
-    public void setAgentManager(AgentManager agentManager) {
-        this.agentManager = agentManager;
-    }
-
-    public void setMissionManager(MissionManager missionManager) {
-        this.missionManager = missionManager;
+        this.agentManager = new AgentManagerImpl(dataSource);
+        this.missionManager = new MissionManagerImpl(dataSource);
     }
 
     private Date toSQLDate(LocalDate localDate) {
@@ -48,13 +39,14 @@ public class AssignmentManagerImpl implements AssignmentManager {
 
     @Override
     public void createAssignment(Assignment assignment) throws SecretAgencyException {
-        try {
-            SimpleJdbcInsert insertAssignment = new SimpleJdbcInsert(jdbc).withTableName("assignments").usingGeneratedKeyColumns("id");
+        try{
+            SimpleJdbcInsert insertAssignment = new SimpleJdbcInsert(jdbc).withTableName("assignments").usingGeneratedKeyColumns("assignmentid");
             SqlParameterSource parameters = new MapSqlParameterSource()
                     .addValue("agentId", assignment.getAgent().getId())
                     .addValue("missionId", assignment.getMission().getId())
                     .addValue("startDate", toSQLDate(assignment.getStartDate()))
-                    .addValue("endDate", toSQLDate(assignment.getEndDate()));
+                    .addValue("endDate", toSQLDate(assignment.getEndDate()))
+                    .addValue("payment", assignment.getPayment());
             Number id = insertAssignment.executeAndReturnKey(parameters);
             assignment.setId(id.longValue());
         }
@@ -67,7 +59,7 @@ public class AssignmentManagerImpl implements AssignmentManager {
     public void updateAssignment(Assignment assignment) throws SecretAgencyException{
         log.debug("updateAssignment({})", assignment);
         if (assignment.getId() == null) throw new SecretAgencyException("assignment id is null");
-        int n = jdbc.update("UPDATE Body SET agentId = ?, missionId = ?, payment = ?, startDate = ? , endDate WHERE assignmentId = ?",
+        int n = jdbc.update("UPDATE ASSIGNMENTS SET agentId = ?, missionId = ?, payment = ?, startDate = ? , endDate = ? WHERE assignmentId = ?",
                 assignment.getAgent().getId(),
                 assignment.getMission().getId(),
                 assignment.getPayment(),
@@ -88,7 +80,7 @@ public class AssignmentManagerImpl implements AssignmentManager {
 
     @Override
     public List<Assignment> getAllAssignmentsForAgent(Agent agent) {
-        return jdbc.query("SELECT * FROM assignments WHERE agentIdId=?",
+        return jdbc.query("SELECT * FROM assignments WHERE agentId=?",
                 (rs, rowNum) -> {
                     long missionId = rs.getLong("missionId");
                     Mission mission = null;
@@ -97,8 +89,10 @@ public class AssignmentManagerImpl implements AssignmentManager {
                     } catch (SecretAgencyException ex) {
                         log.error("cannot find agent", ex);
                     }
-                    LocalDate startDate = rs.getDate("startDate").toLocalDate();
-                    LocalDate endDate = rs.getDate("endDate").toLocalDate();
+                    Date startDate1 = rs.getDate("startDate");
+                    LocalDate startDate = startDate1 == null ? null: startDate1.toLocalDate();
+                    Date endDate1 = rs.getDate("endDate");
+                    LocalDate endDate = endDate1 == null ? null: endDate1.toLocalDate();
                     return new Assignment(rs.getLong("assignmentId"), agent, mission, rs.getDouble("payment"), startDate, endDate);
                 },
                 agent.getId());
@@ -125,7 +119,7 @@ public class AssignmentManagerImpl implements AssignmentManager {
 
     @Override
     public List<Assignment> getAllAssignmentsForMission(Mission mission) throws SecretAgencyException{
-        log.debug("findBodiesInGrave({})", mission);
+        log.debug("getAllAssignmentsForMission({})", mission);
         if (mission == null) throw new SecretAgencyException("mission is null");
         if (mission.getId() == null) throw new SecretAgencyException("mission id is null");
         return jdbc.query(
@@ -134,9 +128,9 @@ public class AssignmentManagerImpl implements AssignmentManager {
 
     @Override
     public Assignment getAssignment(Agent agent, Mission mission) throws SecretAgencyException{
-        log.debug("getBody({})", agent, mission);
+        log.debug("getAssignment({})", agent, mission);
         if (agent == null || mission == null) throw new SecretAgencyException("id is null");
-        List<Assignment> list = jdbc.query("SELECT * FROM assignments WHERE missionId = ?, agentId=?", assignmentMapper, mission.getId(), agent.getId());
+        List<Assignment> list = jdbc.query("SELECT * FROM assignments WHERE missionId = ? AND agentId=?", assignmentMapper, mission.getId(), agent.getId());
         return list.isEmpty() ? null : list.get(0);
     }
 
@@ -186,7 +180,7 @@ public class AssignmentManagerImpl implements AssignmentManager {
     @Override
     public List<Agent> getAvailableAgents() {
         log.debug("getAvailableAgents({})");
-        return jdbc.query("SELECT * FROM agents WHERE id NOT IN (SELECT agentId FROM (SELECT * FROM assignments WHERE missionId IN (SELECT id FROM mission WHERE status = 'ONGOING')))", agentMapper);
+        return jdbc.query("SELECT * FROM agents WHERE id NOT IN (SELECT agentId FROM (SELECT * FROM assignments WHERE missionId IN (SELECT id FROM missions WHERE status = 'ONGOING')))", agentMapper);
     }
 
     @Override

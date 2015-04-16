@@ -26,5 +26,8 @@
         <module name="SecretAgency" />
       </profile>
     </annotationProcessing>
+    <bytecodeTargetLevel target="1.8">
+      <module name="SecretAgency" target="1.8" />
+    </bytecodeTargetLevel>
   </component>
 </project>

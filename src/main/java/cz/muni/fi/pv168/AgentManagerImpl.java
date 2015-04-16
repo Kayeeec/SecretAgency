@@ -1,5 +1,7 @@
 package cz.muni.fi.pv168;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
@@ -13,9 +15,11 @@ import java.util.List;
  * Created by sachmet on 25.3.15.
  */
 public class AgentManagerImpl implements AgentManager {
+    final static Logger log = LoggerFactory.getLogger(AgentManagerImpl.class);
     private JdbcTemplate jdbc;
 
     public AgentManagerImpl(DataSource dataSource) {
+        log.info("AgentManagerIfo constructor called.");
         this.jdbc = new JdbcTemplate(dataSource);
     }
 
@@ -40,6 +44,7 @@ public class AgentManagerImpl implements AgentManager {
 
     @Override
     public void createAgent(Agent agent) throws SecretAgencyException {
+        log.info("createAgent({})", agent);
         try{
             SimpleJdbcInsert insertAgent = new SimpleJdbcInsert(jdbc)
                     .withTableName("agents").usingGeneratedKeyColumns("id");
@@ -54,6 +59,7 @@ public class AgentManagerImpl implements AgentManager {
             agent.setId(id.longValue());
 
         }catch (Exception ex){
+            log.error("exception {}:{} in createAgent({})", ex, ex.getMessage(), agent);
             throw new SecretAgencyException(ex.getMessage(), ex.getCause());
         }
 
@@ -61,6 +67,7 @@ public class AgentManagerImpl implements AgentManager {
 
     @Override
     public void updateAgent(Agent agent) throws SecretAgencyException {
+        log.info("updateAgent({})", agent);
         try{
             Agent agentToUpdate = getAgentById(agent.getId());
             if (!agentToUpdate.getCodeName().equals(agent.getCodeName())){
@@ -75,14 +82,21 @@ public class AgentManagerImpl implements AgentManager {
                     agent.getId()
             );
         }catch (Exception ex){
+            log.error("exception {}:{} in updateAgent({})", ex, ex.getMessage(), agent);
             throw new SecretAgencyException(ex.getMessage(), ex.getCause());
         }
     }
 
     @Override
-    public void deleteAgent(Agent agent) {
+    public void deleteAgent(Agent agent) throws SecretAgencyException {
+        log.info("deleteAgent({})", agent);
+        try{
+            jdbc.update("DELETE FROM agents WHERE id=?", agent.getId());
+        }catch(Exception ex){
+            log.error("exception {}:{} in deleteAgent({})", ex, ex.getMessage(), agent);
+            throw new SecretAgencyException(ex.getMessage(), ex.getCause());
+        }
 
-        jdbc.update("DELETE FROM agents WHERE id=?", agent.getId());
     }
 
 
@@ -94,25 +108,26 @@ public class AgentManagerImpl implements AgentManager {
 
     @Override
     public List<Agent> getAllAgents() {
-
+        log.info("getAllAgents()");
         return jdbc.query("SELECT * FROM agents", agentMapper);
     }
 
     @Override
     public List<Agent> getAllAgentsWithStatus(AgentStatus status) {
+        log.info("getAllAgentsWithStatus({})", status);
         return jdbc.query("SELECT * FROM agents WHERE status=?", agentMapper,
                 agentStatusToString(status));
     }
 
     public Agent getAgentById(Long id)  {
-        //log.debug("getBody({})", id);
+        log.debug("getAgentById({})", id);
         if (id == null) throw new IllegalArgumentException("id is null");
         List<Agent> list = jdbc.query("SELECT id, CODENAME, CONTACT, NOTE, STATUS  FROM AGENTS WHERE id = ?", agentMapper, id);
         return list.isEmpty() ? null : list.get(0);
     }
 
     public Agent getAgentByCodeName(String codeName) {
-        //log.debug("getBody({})", id);
+        log.debug("getAgentByCodeName({})", codeName);
         if (codeName == null) throw new IllegalArgumentException("codename is null");
         List<Agent> list = jdbc.query("SELECT id, CODENAME, CONTACT, NOTE, STATUS  FROM AGENTS WHERE CODENAME = ?", agentMapper, codeName);
         return list.isEmpty() ? null : list.get(0);

@@ -1,7 +1,6 @@
 package cz.muni.fi.pv168;
 
 import junit.framework.TestCase;
-import org.apache.commons.dbcp2.BasicDataSource;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -14,7 +13,6 @@ import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
-import java.util.Properties;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -33,27 +31,6 @@ public class MissionManagerImplTest extends TestCase {
     public void tearDown() throws Exception {
         db.shutdown();
     }
-
-//    @Before
-//    public void setUp() throws Exception {
-//        Properties myconf = new Properties();
-//        myconf.load(Test.class.getResourceAsStream("/myconf.properties"));
-//
-//
-////        BasicDataSource ds = new BasicDataSource();
-////        ds.setUrl(myconf.getProperty("jdbc.url"));
-////        ds.setUsername(myconf.getProperty("jdbc.user"));
-////        ds.setPassword(myconf.getProperty("jdbc.password"));
-//
-//        BasicDataSource ds = new BasicDataSource();
-//        ds.setUrl("jdbc:derby://localhost:1527/MojeDB");
-//        ds.setUsername("user");
-//        ds.setPassword("heslo");
-//
-//        missionManager = new MissionManagerImpl(ds);
-//
-//    }
-
 
     @Test
     public void testCreateMissionWithNull() throws Exception {

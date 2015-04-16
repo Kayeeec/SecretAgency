@@ -18,7 +18,7 @@ public class Mission implements Comparable<Mission> {
     private MissionStatus status = MissionStatus.WAITING;
 
     public Mission() {
-        //sets id
+        //
     }
 
     public Mission(Long id, String name, String location, LocalDate startTime,
@@ -117,9 +117,8 @@ public class Mission implements Comparable<Mission> {
         if (maxEndTime != null ? !maxEndTime.equals(mission.maxEndTime) : mission.maxEndTime != null) return false;
         if (name != null ? !name.equals(mission.name) : mission.name != null) return false;
         if (startTime != null ? !startTime.equals(mission.startTime) : mission.startTime != null) return false;
-        if (status != mission.status) return false;
+        return status == mission.status;
 
-        return true;
     }
 
     @Override

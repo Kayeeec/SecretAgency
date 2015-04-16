@@ -316,44 +316,44 @@ public class AssignmentManagerImplTest extends TestCase {
         assertEquals(2, list3.size());
     }
 
-//    public void testGetAvailableAgents() throws Exception { //no ongoing or waiting missions
-//        Agent agent = agentManager.getAgentByCodeName("Bond");
-//        Agent agent2 = agentManager.getAgentByCodeName("BlackWidow");
-//
-//        Mission mission = missionManager.getMissionByName("Cobra"); //Waiting
-//        Mission mission2 = missionManager.getMissionByName("Mangus"); //Ongoing
-//        Mission finishedMission = missionManager.getMissionByName("Hydra");
-//        Mission failedMission = missionManager.getMissionByName("Lama");
-//
-//        Assignment ass1 = new Assignment(agent, mission, 250000d, mission.getStartTime(), mission.getEndTime());
-//        Assignment ass2 = new Assignment(agent2, mission2, 400000d, mission2.getStartTime(), mission2.getEndTime());
-//        Assignment ass3 = new Assignment(agent, finishedMission, 100000d, finishedMission.getStartTime(), finishedMission.getMaxEndTime());
-//        Assignment ass4 = new Assignment(agent2, failedMission, 100000d, failedMission.getStartTime(), failedMission.getMaxEndTime());
-//
-//        //no assignments
-//        List<Agent> list1 = assignmentManager.getAvailableAgents();
-//        assertEquals("no assignments - both agents should be available",2, list1.size());
-//
-//        //assign to Hydra - finished
-//        assignmentManager.createAssignment(ass3);
-//        List<Agent> list4 = assignmentManager.getAvailableAgents();
-//        assertEquals("agent should be available if assigned to FINISHED mission",2, list4.size());
-//
-//        //assign to Lama - failed
-//        assignmentManager.createAssignment(ass4);
-//        List<Agent> list5 = assignmentManager.getAvailableAgents();
-//        assertEquals("agent should be available if assigned to FAILED mission",2, list5.size());
-//
-//        //assign co Cobra - waiting
-//        assignmentManager.createAssignment(ass1);
-//        List<Agent> list2 = assignmentManager.getAvailableAgents();
-//        assertEquals("agent should NOT be available if has WAITING mission",1, list2.size());
-//
-//        //assign to Mangus - ongoing
-//        assignmentManager.createAssignment(ass2);
-//        List<Agent> list3 = assignmentManager.getAvailableAgents();
-//        assertTrue("agent should NOT be available if has ONGOING mission",list3.isEmpty());
-//    }
+    public void testGetAvailableAgents() throws Exception { //no ongoing or waiting missions
+        Agent agent = agentManager.getAgentByCodeName("Bond");
+        Agent agent2 = agentManager.getAgentByCodeName("BlackWidow");
+
+        Mission mission = missionManager.getMissionByName("Cobra"); //Waiting
+        Mission mission2 = missionManager.getMissionByName("Mangus"); //Ongoing
+        Mission finishedMission = missionManager.getMissionByName("Hydra");
+        Mission failedMission = missionManager.getMissionByName("Lama");
+
+        Assignment ass1 = new Assignment(agent, mission, 250000d, mission.getStartTime(), mission.getEndTime());
+        Assignment ass2 = new Assignment(agent2, mission2, 400000d, mission2.getStartTime(), mission2.getEndTime());
+        Assignment ass3 = new Assignment(agent, finishedMission, 100000d, finishedMission.getStartTime(), finishedMission.getMaxEndTime());
+        Assignment ass4 = new Assignment(agent2, failedMission, 100000d, failedMission.getStartTime(), failedMission.getMaxEndTime());
+
+        //no assignments
+        List<Agent> list1 = assignmentManager.getAvailableAgents();
+        assertEquals("no assignments - both agents should be available",2, list1.size());
+
+        //assign to Hydra - finished
+        assignmentManager.createAssignment(ass3);
+        List<Agent> list4 = assignmentManager.getAvailableAgents();
+        assertEquals("agent should be available if assigned to FINISHED mission",2, list4.size());
+
+        //assign to Lama - failed
+        assignmentManager.createAssignment(ass4);
+        List<Agent> list5 = assignmentManager.getAvailableAgents();
+        assertEquals("agent should be available if assigned to FAILED mission",2, list5.size());
+
+        //assign co Cobra - waiting
+        assignmentManager.createAssignment(ass1);
+        List<Agent> list2 = assignmentManager.getAvailableAgents();
+        assertEquals("agent should NOT be available if has WAITING mission",1, list2.size());
+
+        //assign to Mangus - ongoing
+        assignmentManager.createAssignment(ass2);
+        List<Agent> list3 = assignmentManager.getAvailableAgents();
+        assertTrue("agent should NOT be available if has ONGOING mission",list3.isEmpty());
+    }
 
     public void testGetAllAssignments() throws Exception {
         Agent agent = agentManager.getAgentByCodeName("Bond");

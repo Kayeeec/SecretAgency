@@ -6,17 +6,17 @@ import java.util.List;
  * Created by sachmet on 11.3.15.
  */
 public interface AgentManager {
-    public void createAgent(Agent agent) throws SecretAgencyException;
+    void createAgent(Agent agent) throws SecretAgencyException;
 
-    public void updateAgent(Agent agent) throws SecretAgencyException;
+    void updateAgent(Agent agent) throws SecretAgencyException;
 
-    public void deleteAgent(Agent agent);
+    void deleteAgent(Agent agent) throws SecretAgencyException;
 
-    public List<Agent> getAllAgents();
+    List<Agent> getAllAgents();
 
-    public List<Agent> getAllAgentsWithStatus(AgentStatus status);
+    List<Agent> getAllAgentsWithStatus(AgentStatus status);
 
-    public Agent getAgentById(Long id) ;
+    Agent getAgentById(Long id) ;
 
-    public Agent getAgentByCodeName(String codeName);
+    Agent getAgentByCodeName(String codeName);
 }
