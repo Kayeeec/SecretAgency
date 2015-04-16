@@ -16,6 +16,9 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Properties;
 
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.MatcherAssert.assertThat;
+
 public class MissionManagerImplTest extends TestCase {
     private EmbeddedDatabase db;
     private MissionManager missionManager;
@@ -346,8 +349,11 @@ public class MissionManagerImplTest extends TestCase {
         List<Mission> actualFinished = missionManager.getAllMissionsWithStatus(MissionStatus.FINISHED);
         List<Mission> actualFailed = missionManager.getAllMissionsWithStatus(MissionStatus.FAILED);
 
-        assertTrue(expectedWaiting.equals(actualWaiting));
-        assertTrue(expectedOngoing.equals(actualOngoing));
+//        assertTrue(expectedWaiting.size() == 1);
+//        assertTrue(actualWaiting.size() == 1);
+//        assertEquals(expectedWaiting.get(0), actualWaiting.get(0));
+        assertThat(actualWaiting,is(expectedWaiting));
+        assertThat(actualOngoing,is(expectedOngoing));
         assertTrue(expectedFinished.equals(actualFinished));
         assertTrue(expectedFailed.equals(actualFailed));
 

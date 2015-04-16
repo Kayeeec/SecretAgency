@@ -68,23 +68,16 @@ public class Agent implements Comparable<Agent>{
 
         Agent agent = (Agent) o;
 
-        if (codeName != null ? !codeName.equals(agent.codeName) : agent.codeName != null) return false;
+        if (!codeName.equals(agent.codeName)) return false;
         if (contact != null ? !contact.equals(agent.contact) : agent.contact != null) return false;
-        if (id != null ? !id.equals(agent.id) : agent.id != null) return false;
-        if (note != null ? !note.equals(agent.note) : agent.note != null) return false;
-        if (status != agent.status) return false;
+        if (!id.equals(agent.id)) return false;
 
         return true;
     }
 
     @Override
     public int hashCode() {
-        int result = id != null ? id.hashCode() : 0;
-        result = 31 * result + (codeName != null ? codeName.hashCode() : 0);
-        result = 31 * result + (contact != null ? contact.hashCode() : 0);
-        result = 31 * result + (note != null ? note.hashCode() : 0);
-        result = 31 * result + (status != null ? status.hashCode() : 0);
-        return result;
+        return id.hashCode();
     }
 
     @Override
