@@ -198,33 +198,32 @@ public class AgentManagerImplTests {
 
     }
 
-    @Test
-    public void testGetAllAgentsWithStatus() throws Exception{
-        Agent agent1 = new Agent();
-        agent1.setCodeName("Agent001");
-        agent1.setContact("0905 762 565");
-        agent1.setNote("something interesting");
-        agent1.setStatus(AgentStatus.ACTIVE);
-
-        Agent agent2 = new Agent();
-        agent2.setCodeName("Agent002");
-        agent2.setContact("0905 768 965");
-        agent2.setNote("something interesting");
-        agent2.setStatus(AgentStatus.INACTIVE);
-
-        Agent agent3 = new Agent();
-        agent3.setCodeName("Agent003");
-        agent3.setContact("0905 738 965");
-        agent3.setNote("something interesting");
-        agent3.setStatus(AgentStatus.DECEASED);
-
-        agentManager.createAgent(agent1);
-        agentManager.createAgent(agent2);
-        agentManager.createAgent(agent3);
+//    @Test public void testGetAllAgentsWithStatus() throws Exception{
+//        Agent agent1 = new Agent();
+//        agent1.setCodeName("Agent001");
+//        agent1.setContact("0905 762 565");
+//        agent1.setNote("something interesting");
+//        agent1.setStatus(AgentStatus.ACTIVE);
+//
+//        Agent agent2 = new Agent();
+//        agent2.setCodeName("Agent002");
+//        agent2.setContact("0905 768 965");
+//        agent2.setNote("something interesting");
+//        agent2.setStatus(AgentStatus.INACTIVE);
+//
+//        Agent agent3 = new Agent();
+//        agent3.setCodeName("Agent003");
+//        agent3.setContact("0905 738 965");
+//        agent3.setNote("something interesting");
+//        agent3.setStatus(AgentStatus.DECEASED);
+//
+//        agentManager.createAgent(agent1);
+//        agentManager.createAgent(agent2);
+//        agentManager.createAgent(agent3);
 //        assertThat(agentManager.getAllAgentsWithStatus(AgentStatus.ACTIVE), hasItem(agent1));
 //        assertThat(agentManager.getAllAgentsWithStatus(AgentStatus.INACTIVE), hasItem(agent2));
 //        assertThat(agentManager.getAllAgentsWithStatus(AgentStatus.DECEASED), hasItem(agent3));
-    }
+//    }
 
     @Test
     public void testGetAgent() throws SecretAgencyException{

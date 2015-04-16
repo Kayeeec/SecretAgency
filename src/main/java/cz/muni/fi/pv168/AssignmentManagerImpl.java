@@ -47,15 +47,20 @@ public class AssignmentManagerImpl implements AssignmentManager {
     }
 
     @Override
-    public void createAssignment(Assignment assignment) {
-        SimpleJdbcInsert insertAssignment = new SimpleJdbcInsert(jdbc).withTableName("assignments").usingGeneratedKeyColumns("id");
-        SqlParameterSource parameters = new MapSqlParameterSource()
-                .addValue("agentId", assignment.getAgent().getId())
-                .addValue("missionId", assignment.getMission().getId())
-                .addValue("startDate", toSQLDate(assignment.getStartDate()))
-                .addValue("endDate", toSQLDate(assignment.getEndDate()));
-        Number id = insertAssignment.executeAndReturnKey(parameters);
-        assignment.setId(id.longValue());
+    public void createAssignment(Assignment assignment) throws SecretAgencyException {
+        try {
+            SimpleJdbcInsert insertAssignment = new SimpleJdbcInsert(jdbc).withTableName("assignments").usingGeneratedKeyColumns("id");
+            SqlParameterSource parameters = new MapSqlParameterSource()
+                    .addValue("agentId", assignment.getAgent().getId())
+                    .addValue("missionId", assignment.getMission().getId())
+                    .addValue("startDate", toSQLDate(assignment.getStartDate()))
+                    .addValue("endDate", toSQLDate(assignment.getEndDate()));
+            Number id = insertAssignment.executeAndReturnKey(parameters);
+            assignment.setId(id.longValue());
+        }
+        catch (Exception ex){
+            throw new SecretAgencyException("did not create assignment");
+        }
     }
 
     @Override
@@ -181,7 +186,7 @@ public class AssignmentManagerImpl implements AssignmentManager {
     @Override
     public List<Agent> getAvailableAgents() {
         log.debug("getAvailableAgents({})");
-        return jdbc.query("SELECT * FROM agents WHERE id NOT IN (SELECT agentId FROM assignments)", agentMapper);
+        return jdbc.query("SELECT * FROM agents WHERE id NOT IN (SELECT agentId FROM (SELECT * FROM assignments WHERE missionId IN (SELECT id FROM mission WHERE status = 'ONGOING')))", agentMapper);
     }
 
     @Override
