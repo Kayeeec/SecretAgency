@@ -37,6 +37,14 @@ public class AssignmentManagerImpl implements AssignmentManager {
         return new Date(ZonedDateTime.of(localDate.atStartOfDay(), ZoneId.systemDefault()).toInstant().toEpochMilli());
     }
 
+    public void setMissionManager(MissionManager bookManager) {
+        this.missionManager = missionManager;
+    }
+
+    public void setAgentManager(AgentManager customerManager) {
+        this.agentManager = agentManager;
+    }
+
     @Override
     public void createAssignment(Assignment assignment) throws SecretAgencyException {
         try{
@@ -180,7 +188,7 @@ public class AssignmentManagerImpl implements AssignmentManager {
     @Override
     public List<Agent> getAvailableAgents() {
         log.debug("getAvailableAgents({})");
-        return jdbc.query("SELECT * FROM agents WHERE id NOT IN (SELECT agentId FROM (SELECT * FROM assignments WHERE missionId IN (SELECT id FROM missions WHERE status = 'ONGOING')))", agentMapper);
+        return jdbc.query("SELECT * FROM agents WHERE id NOT IN (SELECT agentId FROM (SELECT * FROM assignments WHERE missionId IN (SELECT id FROM missions WHERE status LIKE 'ongoing')))", agentMapper);
     }
 
     @Override
