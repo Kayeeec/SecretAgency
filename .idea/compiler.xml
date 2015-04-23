@@ -23,11 +23,8 @@
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
         <processorPath useClasspath="true" />
-        <module name="SecretAgency" />
+        <module name="cz.muni.fi" />
       </profile>
     </annotationProcessing>
-    <bytecodeTargetLevel target="1.8">
-      <module name="SecretAgency" target="1.8" />
-    </bytecodeTargetLevel>
   </component>
 </project>

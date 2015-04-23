@@ -107,9 +107,15 @@ public class AgentManagerImpl implements AgentManager {
 
 
     @Override
-    public List<Agent> getAllAgents() {
+    public List<Agent> getAllAgents() throws SecretAgencyException{
         log.info("getAllAgents()");
-        return jdbc.query("SELECT * FROM agents", agentMapper);
+        try {
+            return jdbc.query("SELECT * FROM agents", agentMapper);
+        }
+        catch (Exception e){
+            throw new SecretAgencyException("did not get all agents");
+        }
+
     }
 
     @Override

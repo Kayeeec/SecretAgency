@@ -4,16 +4,10 @@ import org.junit.Before;
 import org.junit.After;
 import org.junit.Test;
 
-import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.datasource.embedded.EmbeddedDatabase;
 import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseBuilder;
 import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseType;
 
-import java.nio.channels.IllegalSelectorException;
-
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
 import java.util.Arrays;
 import java.util.List;
 
@@ -23,8 +17,6 @@ import static java.util.Collections.*;
 //import static junit.framework.Assert.assertNotSame;
 //import static junit.framework.Assert.assertNull;
 import static junit.framework.TestCase.*;
-
-import static org.hamcrest.CoreMatchers.*;
 
 
 //import static org.junit.Assert.assertNotNull;

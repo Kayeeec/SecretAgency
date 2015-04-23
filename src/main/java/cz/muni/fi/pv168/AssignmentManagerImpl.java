@@ -37,11 +37,11 @@ public class AssignmentManagerImpl implements AssignmentManager {
         return new Date(ZonedDateTime.of(localDate.atStartOfDay(), ZoneId.systemDefault()).toInstant().toEpochMilli());
     }
 
-    public void setMissionManager(MissionManager bookManager) {
+    public void setMissionManager(MissionManager missionManager) {
         this.missionManager = missionManager;
     }
 
-    public void setAgentManager(AgentManager customerManager) {
+    public void setAgentManager(AgentManager agentManager) {
         this.agentManager = agentManager;
     }
 

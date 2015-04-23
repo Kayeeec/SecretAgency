@@ -12,7 +12,7 @@ public interface AgentManager {
 
     void deleteAgent(Agent agent) throws SecretAgencyException;
 
-    List<Agent> getAllAgents();
+    List<Agent> getAllAgents() throws SecretAgencyException;
 
     List<Agent> getAllAgentsWithStatus(AgentStatus status);
 
